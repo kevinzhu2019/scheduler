@@ -1,11 +1,11 @@
-import { React, useState } from "react";
+import { useState } from "react";
 
 export default function useVisualMode(initial) {
   const [mode, setMode] = useState(initial);
   const [history, setHistory] = useState([initial]);
 
   function transition(newMode, replace = false) {
-    setHistory(previousStatus => replace ? [...previousStatus.slice(0, previousStatus.length - 1), newMode] : [...previousStatus, newMode]);
+    setHistory(previousStatus => replace ? [...previousStatus.slice(0, previousStatus.length - 1), newMode] : [...previousStatus, newMode]);//this is array destructuring, if replace the last element of a array or not.
     setMode(newMode);
   }
 
