@@ -23,7 +23,7 @@ export default function Application(props) {
     interviewers: {}
   });
 
-  const setDay = day => setState(prev => ({ ...prev, day }));
+  const setDay = (day) => setState(prev => ({ ...prev, day }));
   // const setDays = days => setState(prev => ({ ...prev, days }))
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export default function Application(props) {
     })
   }, [])
 
-  async function bookInterview(id, interview) {
+  function bookInterview(id, interview) {
     console.log(id, interview);
     const appointment = {
       ...state.appointments[id],
@@ -54,13 +54,27 @@ export default function Application(props) {
       appointments
     });
 
-    let result = await axios.put(`http://localhost:8001/api/appointments/${id}`, {
+    axios.put(`http://localhost:8001/api/appointments/${id}`, {
       interview,
       student: id
      } 
     );
-    setState(previousState => ({ ...previousState, appointments: result.data }));
+    // setState(previousState => ({ ...previousState, appointments: result.data }));
     transition("SHOW");
+  }
+
+  function cancelInterview(id) {
+    const appointment = {
+      ...state.appointments[id],
+      interview: null
+    };
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment
+    };
+
+    axios.delete(`http://localhost:8001/api/appointments/${id}`, appointment);
+
   }
 
   const apiArray = getAppointmentsForDay(state, state.day);
@@ -74,6 +88,7 @@ export default function Application(props) {
         interview={interview}
         interviewers={getInterviewersForDay(state, state.day)}
         bookInterview={bookInterview}
+        cancelInterview={cancelInterview}
       />
     );
   })
