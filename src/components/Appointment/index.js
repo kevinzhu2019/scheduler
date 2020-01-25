@@ -37,6 +37,9 @@ export default function Appointment(props) {
 
   function doConfirmDeletion() {
     transition(DELETING, true);
+    transition(SAVING);
+    props.cancelInterview(props.id);
+    transition(EMPTY);
   }
 
   return (
