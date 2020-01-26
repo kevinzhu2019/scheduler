@@ -6,78 +6,88 @@ import DayList from './DayList.js';
 
 import Appointment from "components/Appointment/index.js";
 
-import axios from "axios";
-
 import { getAppointmentsForDay, getInterviewersForDay, getInterview } from "helpers/selectors.js";
 
-import useVisualMode from "hooks/useVisualMode";
+import { useApplicationData } from "hooks/useApplicationData";
 
 
 export default function Application(props) {
-  const { mode, transition, back } = useVisualMode ("SHOW");
 
-  const [state, setState] = useState({
-    day: "Monday",
-    days: [],
-    appointments: {},
-    interviewers: {}
-  });
+  const {
+    state,
+    setDay,
+    bookInterview,
+    cancelInterview
+  } = useApplicationData();
 
-  const setDay = (day) => setState(prev => ({ ...prev, day }));
-  // const setDays = days => setState(prev => ({ ...prev, days }))
 
-  useEffect(() => {
 
-    Promise.all([
-      axios.get(`http://localhost:8001/api/days`),
-      axios.get(`http://localhost:8001/api/appointments`),
-      axios.get(`http://localhost:8001/api/interviewers`),
-    ])
-    .then((all) => {
-      // console.log(all);
-      setState(prev => ({...prev, days: all[0].data, appointments: all[1].data, interviewers: all[2].data }));
-    })
-  }, [])
+  // const { mode, transition, back } = useVisualMode ("SHOW");
 
-  function bookInterview(id, interview) {
-    console.log(id, interview);
-    const appointment = {
-      ...state.appointments[id],
-      interview: { ...interview }
-    };
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment
-    };
-    setState({
-      ...state,
-      appointments
-    });
+  // const [state, setState] = useState({
+  //   day: "Monday",
+  //   days: [],
+  //   appointments: {},
+  //   interviewers: {}
+  // });
 
-    axios.put(`http://localhost:8001/api/appointments/${id}`, {
-      interview,
-      student: id
-     } 
-    );
-    // setState(previousState => ({ ...previousState, appointments: result.data }));
-    transition("SHOW");
-  }
+  // const setDay = (day) => setState(prev => ({ ...prev, day }));
+  // // const setDays = days => setState(prev => ({ ...prev, days }))
 
-  function cancelInterview(id) {
-    const appointment = {
-      ...state.appointments[id],
-      interview: null
-    };
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment
-    };
+  // useEffect(() => {
 
-    axios.delete(`http://localhost:8001/api/appointments/${id}`, appointment);
+  //   Promise.all([
+  //     axios.get(`http://localhost:8001/api/days`),
+  //     axios.get(`http://localhost:8001/api/appointments`),
+  //     axios.get(`http://localhost:8001/api/interviewers`),
+  //   ])
+  //   .then((all) => {
+  //     // console.log(all);
+  //     setState(prev => ({...prev, days: all[0].data, appointments: all[1].data, interviewers: all[2].data }));
+  //   })
+  // }, [])
 
-  }
+  // function bookInterview(id, interview) {
+  //   console.log(id, interview);
+  //   const appointment = {
+  //     ...state.appointments[id],
+  //     interview: { ...interview }
+  //   };
+  //   const appointments = {
+  //     ...state.appointments,
+  //     [id]: appointment
+  //   };
+  //   setState({
+  //     ...state,
+  //     appointments
+  //   });
+
+  //   axios.put(`http://localhost:8001/api/appointments/${id}`, {
+  //     interview,
+  //     student: id
+  //    }
+  //   )
+  //   ;
+  //   // setState(previousState => ({ ...previousState, appointments: result.data }));
+  //   transition("SHOW");
+  // }
+
+  // function cancelInterview(id) {
+  //   const appointment = {
+  //     ...state.appointments[id],
+  //     interview: null
+  //   };
+  //   const appointments = {
+  //     ...state.appointments,
+  //     [id]: appointment
+  //   };
+
+  //   axios.delete(`http://localhost:8001/api/appointments/${id}`, appointment);
+
+  // }
 
   const apiArray = getAppointmentsForDay(state, state.day);
+  // console.log(apiArray);
   const apiAppointments = apiArray.map((item) => {
     const interview = getInterview(state, item.interview);
     return (
@@ -92,6 +102,7 @@ export default function Application(props) {
       />
     );
   })
+  // console.log(apiAppointments);
 
   return (
     <main className="layout">

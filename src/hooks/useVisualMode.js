@@ -4,9 +4,14 @@ export default function useVisualMode(initial) {
   const [mode, setMode] = useState(initial);
   const [history, setHistory] = useState([initial]);
 
-  function transition(newMode, replace = false) {
-    setHistory(previousStatus => replace ? [...previousStatus.slice(0, previousStatus.length - 1), newMode] : [...previousStatus, newMode]);//this is array destructuring, if replace the last element of a array or not.
+  function transition(newMode, replace) {
+    if (replace) {
+      setHistory((previousState) => [...previousState.slice(0, previousState.length - 1), newMode])
+    }
+    setHistory((previousState) => [...previousState, newMode]);
     setMode(newMode);
+    // setHistory(previousStatus => replace ? [...previousStatus.slice(0, previousStatus.length - 1), newMode] : [...previousStatus, newMode]);
+    // setMode(newMode);
   }
 
   function back() {

@@ -7,6 +7,7 @@ import useVisualMode from "hooks/useVisualMode";
 import Form from "./Form";
 import Status from "./Status";
 import Confirm from "./Confirm";
+import Error from "./Error";
 
 export default function Appointment(props) {
 
@@ -16,6 +17,9 @@ export default function Appointment(props) {
   const SAVING = "SAVING";
   const DELETING = "DELETING";
   const CONFIRM = "CONFIRM";
+  const EDIT = "EDIT";
+  const ERROR_SAVE = "ERROR_SAVE";
+  const ERROR_DELETE = "ERROR_DELETE";
   const { mode, transition, back } = useVisualMode (
     props.interview ? SHOW : EMPTY
   );
@@ -25,9 +29,15 @@ export default function Appointment(props) {
       student: name,
       interviewer
     };
-    transition(SAVING);
-    props.bookInterview(props.id, interview)
 
+    transition(SAVING);
+
+    // props
+    //   .bookInterview(props.id, interview)
+    //   .then(() => transition(SHOW))
+    //   .catch(error => transition(ERROR_SAVE));
+
+    props.bookInterview(props.id, interview);
     transition(SHOW);
   }
 
@@ -42,18 +52,24 @@ export default function Appointment(props) {
     transition(EMPTY);
   }
 
+  function onEdit() {
+    transition(EDIT);
+  }
+
   return (
     <article className="appointment">
       <Header time={props.time} />
-        {mode === EMPTY && <Empty onAdd={() =>  { transition(CREATE)}} />}
+        {mode === EMPTY && <Empty onAdd={() =>  { transition(CREATE) }} />}
         {mode === SHOW && (
           <Show
+            id={props.id}
             student={props.interview.student}
             interviewer={props.interview.interviewer}
             onDelete={deleteOrNot}
+            onEdit={onEdit}
           />
         )}
-        {mode === SAVING && (<Status message={SAVING} />)}
+        {mode === SAVING && (<Status message={"SAVING"} />)}
         {mode === CONFIRM && (
           <Confirm
             message={"Are you sure you want to delete?"}
@@ -61,12 +77,32 @@ export default function Appointment(props) {
             onCancel={() => back()}
           />
         )}
-        {mode === CREATE && 
+        {mode === CREATE && (
         <Form 
           interviewers={props.interviewers}
           onCancel={() => {back(EMPTY)}}
           onSave={save}
-        />}
+        />)}
+        {mode === EDIT && (
+        <Form
+          name={props.interview && props.interview.student}
+          interviewer={props.interview && props.interview.interviewer.id}
+          interviewers={props.interviewers}
+          onCancel={() => back()}
+          onSave={save}
+        />)}
+        {mode === ERROR_SAVE && (
+          <Error
+            message={"Could not save message, Please try again."}
+            onClose={() => back()} 
+          />
+        )}
+        {mode === ERROR_DELETE && (
+          <Error
+            message={"Could not delete the message, please try again."}
+            onClose={() => back()} 
+          />
+        )}
     </article>
   );
 }
