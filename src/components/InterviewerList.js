@@ -5,6 +5,13 @@ import InterviewerListItem from './InterviewerListItem.js';
 import PropTypes from 'prop-types';
 
 export default function InterviewerList(props) {
+
+  //below "propTypes" is for testing only, make sure the type is correct otherwise warning pops up in console.
+  InterviewerList.propTypes = {
+    value: PropTypes.number,
+    onChange: PropTypes.func.isRequired
+  };
+
   const temp = props.interviewers.map((item) => {
     return (
       <InterviewerListItem

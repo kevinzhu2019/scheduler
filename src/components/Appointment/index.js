@@ -8,6 +8,7 @@ import Form from "./Form";
 import Status from "./Status";
 import Confirm from "./Confirm";
 import Error from "./Error";
+// import validate from "./Form";
 
 export default function Appointment(props) {
 
@@ -29,6 +30,8 @@ export default function Appointment(props) {
       student: name,
       interviewer
     };
+
+    // validate(name, interviewer);
 
     transition(SAVING);
 
