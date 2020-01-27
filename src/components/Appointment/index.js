@@ -32,13 +32,11 @@ export default function Appointment(props) {
 
     transition(SAVING);
 
-    // props
-    //   .bookInterview(props.id, interview)
-    //   .then(() => transition(SHOW))
-    //   .catch(error => transition(ERROR_SAVE));
+    props
+      .bookInterview(props.id, interview)
+      .then(() => transition(SHOW))
+      .catch(error => transition(ERROR_SAVE, true));
 
-    props.bookInterview(props.id, interview);
-    transition(SHOW);
   }
 
   function deleteOrNot() {
@@ -48,8 +46,12 @@ export default function Appointment(props) {
   function doConfirmDeletion() {
     transition(DELETING, true);
     transition(SAVING);
-    props.cancelInterview(props.id);
-    transition(EMPTY);
+    //before using .then, we MUST return the Promise from Axios first, *****
+    props
+    .cancelInterview(props.id)
+    .then(() => transition(EMPTY))
+    .catch(error => transition(ERROR_DELETE, true))
+    // .then(() => transition(SHOW));
   }
 
   function onEdit() {
@@ -100,7 +102,7 @@ export default function Appointment(props) {
         {mode === ERROR_DELETE && (
           <Error
             message={"Could not delete the message, please try again."}
-            onClose={() => back()} 
+            onClose={() => back(true)} 
           />
         )}
     </article>

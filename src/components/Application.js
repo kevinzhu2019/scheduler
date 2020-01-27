@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import "components/Application.scss";
 
@@ -127,7 +127,8 @@ export default function Application(props) {
         />
       </section>
       <section className="schedule">
-        {/* Replace this with the schedule elements durint the "The Scheduler" activity. */apiAppointments}
+        { apiAppointments }
+        <Appointment id="last" time="5pm" />
       </section>
     </main>
   );
