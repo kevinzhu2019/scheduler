@@ -36,10 +36,9 @@ export default function Appointment(props) {
     transition(SAVING);
 
     props
-      .bookInterview(props.id, interview)
-      .then(() => transition(SHOW))
-      .catch(error => transition(ERROR_SAVE, true));
-
+    .bookInterview(props.id, interview)
+    .then(() => transition(SHOW))
+    .catch(error => transition(ERROR_SAVE, true));
   }
 
   function deleteOrNot() {
@@ -62,7 +61,7 @@ export default function Appointment(props) {
   }
 
   return (
-    <article className="appointment">
+    <article className="appointment" data-testid="appointment">
       <Header time={props.time} />
         {mode === EMPTY && <Empty onAdd={() =>  { transition(CREATE) }} />}
         {mode === SHOW && (
@@ -83,19 +82,19 @@ export default function Appointment(props) {
           />
         )}
         {mode === CREATE && (
-        <Form 
-          interviewers={props.interviewers}
-          onCancel={() => {back(EMPTY)}}
-          onSave={save}
-        />)}
+          <Form 
+            interviewers={props.interviewers}
+            onCancel={() => {back(EMPTY)}}
+            onSave={save}
+          />)}
         {mode === EDIT && (
-        <Form
-          name={props.interview && props.interview.student}
-          interviewer={props.interview && props.interview.interviewer.id}
-          interviewers={props.interviewers}
-          onCancel={() => back()}
-          onSave={save}
-        />)}
+          <Form
+            name={props.interview && props.interview.student}
+            interviewer={props.interview && props.interview.interviewer.id}
+            interviewers={props.interviewers}
+            onCancel={() => back()}
+            onSave={save}
+          />)}
         {mode === ERROR_SAVE && (
           <Error
             message={"Could not save message, Please try again."}

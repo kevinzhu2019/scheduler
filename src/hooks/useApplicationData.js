@@ -1,12 +1,13 @@
 import { useEffect, useReducer } from "react";
 import axios from "axios";
-import useVisualMode from "hooks/useVisualMode";
+// import useVisualMode from "hooks/useVisualMode";
 
 export function useApplicationData() {
 
   const SET_DAY = "SET_DAY";
   const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
   const SET_INTERVIEW = "SET_INTERVIEW";
+  const SET_SPOTS = "SET_SPOTS";
 
   function reducer(state, action) {
     switch (action.type) {
@@ -25,6 +26,11 @@ export function useApplicationData() {
           appointments: action.appointments,
           days: action.days
         }
+      case SET_SPOTS:
+        return {
+          ...state,
+          days: action.days
+        }
       
       default:
         throw new Error(
@@ -33,7 +39,7 @@ export function useApplicationData() {
     }
   }
 
-  const { mode, transition, back } = useVisualMode ("SHOW");
+  // const { mode, transition, back } = useVisualMode ("SHOW");
 
   //dispatch is rqual to setState
   const [state, dispatch] = useReducer(reducer, {
@@ -47,9 +53,9 @@ export function useApplicationData() {
 
   useEffect(() => {
     Promise.all([
-      axios.get(`http://localhost:8001/api/days`),
-      axios.get(`http://localhost:8001/api/appointments`),
-      axios.get(`http://localhost:8001/api/interviewers`),
+      axios.get(`/api/days`),
+      axios.get(`/api/appointments`),
+      axios.get(`/api/interviewers`),
     ])
     .then((all) => {
       // console.log(all);
@@ -57,8 +63,20 @@ export function useApplicationData() {
     })
   }, []);
 
+  function updateDaysSpots(days, appointmentID, incrementer) {
+    return days.map((day) => {
+      if (!day.appointments.includes(appointmentID)) {
+        return day;
+      } 
+      return {
+        ...day,
+        spots: day.spots + incrementer
+      }
+    })
+  }
+
   function bookInterview(id, interview) {
-    console.log(id, interview);
+    // console.log(id, interview);
     const appointment = {
       ...state.appointments[id],
       interview: { ...interview }
@@ -67,17 +85,21 @@ export function useApplicationData() {
       ...state.appointments,
       [id]: appointment
     };
+
     dispatch({
       type: SET_INTERVIEW,
       ...state,
       appointments
     });
     // transition("SHOW");
-    return axios.put(`http://localhost:8001/api/appointments/${id}`, {
+    return axios.put(`/api/appointments/${id}`, {
       interview,
       student: id
-     }
-    );
+     })
+     .then(() => {
+       const days = updateDaysSpots(state.days, id, -1);
+       dispatch({ type: SET_SPOTS, days: days })
+     });
     // setState(previousState => ({ ...previousState, appointments: result.data }));
     
   }
@@ -87,13 +109,22 @@ export function useApplicationData() {
       ...state.appointments[id],
       interview: null
     };
-    // const appointments = {
-    //   ...state.appointments,
-    //   [id]: appointment
-    // };
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment
+    };
 
-    return axios.delete(`http://localhost:8001/api/appointments/${id}`, appointment);
+    dispatch({
+      type: SET_INTERVIEW,
+      ...state,
+      appointments,
+    });
 
+    return axios.delete(`/api/appointments/${id}`, appointment)
+    .then(() => {
+      const days = updateDaysSpots(state.days, id, 1);
+      dispatch({ type: SET_SPOTS, days: days })
+    });
   }
 
   return {
