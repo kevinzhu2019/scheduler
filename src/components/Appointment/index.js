@@ -47,7 +47,7 @@ export default function Appointment(props) {
 
   function doConfirmDeletion() {
     transition(DELETING, true);
-    transition(SAVING);
+    transition(DELETING);
     //before using .then, we MUST return the Promise from Axios first, *****
     props
     .cancelInterview(props.id)
@@ -74,6 +74,7 @@ export default function Appointment(props) {
           />
         )}
         {mode === SAVING && (<Status message={"SAVING"} />)}
+        {mode === DELETING && (<Status message={"DELETING"} />)}
         {mode === CONFIRM && (
           <Confirm
             message={"Are you sure you want to delete?"}

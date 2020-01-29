@@ -101,7 +101,6 @@ export function useApplicationData() {
        dispatch({ type: SET_SPOTS, days: days })
      });
     // setState(previousState => ({ ...previousState, appointments: result.data }));
-    
   }
 
   function cancelInterview(id) {
