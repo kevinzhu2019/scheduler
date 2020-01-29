@@ -124,6 +124,50 @@ describe("Application", () => {
     });
     // check editing action will not reduce the spot amount.(this part was killing me and I still dont know why...)
     expect(getByText(day, "1 spot remaining")).toBeInTheDocument();
-  })
+  });
 
+  it("shows the save error when failing to save an appointment", async() => {
+    axios.put.mockRejectedValueOnce();
+    const { container } = render(<Application />);
+    await waitForElement(() => getByText(container, "Archie Cohen"));
+   
+    const appointment = getAllByTestId(container, "appointment")[0];
+
+    fireEvent.click(queryByAltText(appointment, "Add"));
+
+    fireEvent.change(getByPlaceholderText(appointment, /enter student name/i), {
+      target: { value: "kai" }
+    });
+    fireEvent.click(getByAltText(appointment, "Sylvia Palmer"));
+
+    fireEvent.click(getByText(appointment, "Save"));
+
+    expect(getByText(appointment, "SAVING")).toBeInTheDocument();
+
+    await waitForElement(() => getByText(appointment, "Could not save message, Please try again."));
+
+  });
+
+  it("shows the delete error when failing to delete an existing appointment", async() => {
+    //mocking the deleting function
+    axios.delete.mockRejectedValueOnce();
+    
+    const { container } = render(<Application />);
+
+    await waitForElement(() => getByText(container, "Archie Cohen"));
+
+    const appointment = getAllByTestId(container, "appointment").find(
+      appointment => queryByText(appointment, "Archie Cohen")
+    );
+
+    fireEvent.click(queryByAltText(appointment, "Delete"));
+
+    expect(getByText(appointment, "Are you sure you want to delete?")).toBeInTheDocument();
+
+    fireEvent.click(queryByText(appointment, "Confirm"));
+
+    expect(getByText(appointment, "DELETING")).toBeInTheDocument();
+
+    await waitForElement(() => getByText(appointment, "Could not delete the message, please try again."));
+  });
 });

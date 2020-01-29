@@ -1,43 +1,50 @@
 import { useEffect, useReducer } from "react";
 import axios from "axios";
+import reducer, {
+  SET_DAY,
+  SET_APPLICATION_DATA,
+  SET_INTERVIEW,
+  SET_SPOTS
+} from "reducers/application";
+
 // import useVisualMode from "hooks/useVisualMode";
 
 export function useApplicationData() {
 
-  const SET_DAY = "SET_DAY";
-  const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
-  const SET_INTERVIEW = "SET_INTERVIEW";
-  const SET_SPOTS = "SET_SPOTS";
+  // const SET_DAY = "SET_DAY";
+  // const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
+  // const SET_INTERVIEW = "SET_INTERVIEW";
+  // const SET_SPOTS = "SET_SPOTS";
 
-  function reducer(state, action) {
-    switch (action.type) {
-      case SET_DAY:
-        return { ...state, day: action.day }
-      case SET_APPLICATION_DATA:
-        return {
-          ...state,
-          days: action.days,
-          appointments: action.appointments,
-          interviewers: action.interviewers
-        };
-      case SET_INTERVIEW: 
-        return {
-          ...state,
-          appointments: action.appointments,
-          days: action.days
-        }
-      case SET_SPOTS:
-        return {
-          ...state,
-          days: action.days
-        }
+  // function reducer(state, action) {
+  //   switch (action.type) {
+  //     case SET_DAY:
+  //       return { ...state, day: action.day }
+  //     case SET_APPLICATION_DATA:
+  //       return {
+  //         ...state,
+  //         days: action.days,
+  //         appointments: action.appointments,
+  //         interviewers: action.interviewers
+  //       };
+  //     case SET_INTERVIEW: 
+  //       return {
+  //         ...state,
+  //         appointments: action.appointments,
+  //         days: action.days
+  //       }
+  //     case SET_SPOTS:
+  //       return {
+  //         ...state,
+  //         days: action.days
+  //       }
       
-      default:
-        throw new Error(
-          `Tried to reduce with unsupported action type: ${action.type}`
-        );
-    }
-  }
+  //     default:
+  //       throw new Error(
+  //         `Tried to reduce with unsupported action type: ${action.type}`
+  //       );
+  //   }
+  // }
 
   // const { mode, transition, back } = useVisualMode ("SHOW");
 
