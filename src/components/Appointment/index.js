@@ -21,6 +21,7 @@ export default function Appointment(props) {
   const EDIT = "EDIT";
   const ERROR_SAVE = "ERROR_SAVE";
   const ERROR_DELETE = "ERROR_DELETE";
+  const ERROR_INTERVIEWER = "ERROR_INTERVIEWER";
   const { mode, transition, back } = useVisualMode (
     props.interview ? SHOW : EMPTY
   );
@@ -31,6 +32,10 @@ export default function Appointment(props) {
       interviewer
     };
 
+    if (!interviewer) {
+      transition(ERROR_INTERVIEWER, true);
+    } else {
+
     // validate(name, interviewer);
 
     transition(SAVING);
@@ -39,6 +44,7 @@ export default function Appointment(props) {
     .bookInterview(props.id, interview)
     .then(() => transition(SHOW))
     .catch(error => transition(ERROR_SAVE, true));
+    }
   }
 
   function deleteOrNot() {
@@ -105,6 +111,12 @@ export default function Appointment(props) {
         {mode === ERROR_DELETE && (
           <Error
             message={"Could not delete the message, please try again."}
+            onClose={() => back(true)} 
+          />
+        )}
+        {mode === ERROR_INTERVIEWER && (
+          <Error
+            message={"Please choose an interviewer."}
             onClose={() => back(true)} 
           />
         )}
