@@ -122,7 +122,7 @@ describe("Application", () => {
     const day = getAllByTestId(container, "day").find(day => {
       return queryByText(day, "Monday");
     });
-    console.log(day);
+    // check editing action will not reduce the spot amount.(this part was killing me and I still dont know why...)
     expect(getByText(day, "1 spot remaining")).toBeInTheDocument();
   })
 

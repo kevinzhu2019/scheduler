@@ -67,7 +67,7 @@ export function useApplicationData() {
     return days.map((day) => {
       if (!day.appointments.includes(appointmentID)) {
         return day;
-      } 
+      }      
       return {
         ...day,
         spots: day.spots + incrementer
@@ -77,7 +77,6 @@ export function useApplicationData() {
 
   function bookInterview(id, interview) {
     // console.log(id, interview);
-    const judger = state.appointments[id].interview;
     const appointment = {
       ...state.appointments[id],
       interview: { ...interview }
@@ -96,12 +95,10 @@ export function useApplicationData() {
     return axios.put(`/api/appointments/${id}`, {
       interview,
       student: id
-     })
-     .then(() => {
-       if (!judger) {
-        const days = updateDaysSpots(state.days, id, -1);
-        dispatch({ type: SET_SPOTS, days: days })
-       }
+    })
+    .then(() => {
+       const days = updateDaysSpots(state.days, id, -1);
+       dispatch({ type: SET_SPOTS, days: days })
      });
     // setState(previousState => ({ ...previousState, appointments: result.data }));
   }
