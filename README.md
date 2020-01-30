@@ -29,3 +29,9 @@ npm run storybook
 ## Extra
 
 Addressed and fixed a critical bug that was out of requirement: if user does not choose interviewer when book a new appointment, database will crash and the only way is to restore database.
+
+## Screen shots
+
+!["How to book a new appointment"](https://github.com/kevinzhu2019/scheduler/blob/master/docs/scheduler1.png?raw=true)
+
+!["Delete an appointment"](https://github.com/kevinzhu2019/scheduler/blob/master/docs/scheduler2.png?raw=true)
