@@ -14,6 +14,6 @@ export default function DayList(props) {
         setDay={props.setDay}
       />
     )
-  })
+  });
   return temp;
 }

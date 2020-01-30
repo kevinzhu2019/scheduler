@@ -7,48 +7,8 @@ import reducer, {
   SET_SPOTS
 } from "reducers/application";
 
-// import useVisualMode from "hooks/useVisualMode";
-
 export function useApplicationData() {
 
-  // const SET_DAY = "SET_DAY";
-  // const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
-  // const SET_INTERVIEW = "SET_INTERVIEW";
-  // const SET_SPOTS = "SET_SPOTS";
-
-  // function reducer(state, action) {
-  //   switch (action.type) {
-  //     case SET_DAY:
-  //       return { ...state, day: action.day }
-  //     case SET_APPLICATION_DATA:
-  //       return {
-  //         ...state,
-  //         days: action.days,
-  //         appointments: action.appointments,
-  //         interviewers: action.interviewers
-  //       };
-  //     case SET_INTERVIEW: 
-  //       return {
-  //         ...state,
-  //         appointments: action.appointments,
-  //         days: action.days
-  //       }
-  //     case SET_SPOTS:
-  //       return {
-  //         ...state,
-  //         days: action.days
-  //       }
-      
-  //     default:
-  //       throw new Error(
-  //         `Tried to reduce with unsupported action type: ${action.type}`
-  //       );
-  //   }
-  // }
-
-  // const { mode, transition, back } = useVisualMode ("SHOW");
-
-  //dispatch is rqual to setState
   const [state, dispatch] = useReducer(reducer, {
     day: "Monday",
     days: [],
@@ -65,11 +25,11 @@ export function useApplicationData() {
       axios.get(`/api/interviewers`),
     ])
     .then((all) => {
-      // console.log(all);
       dispatch({ type: SET_APPLICATION_DATA, days: all[0].data, appointments: all[1].data, interviewers: all[2].data });
     })
   }, []);
 
+  //Below function is to calculate the remaining spots when an appointment is added or deleted
   function updateDaysSpots(days, appointmentID, incrementer) {
     return days.map((day) => {
       if (!day.appointments.includes(appointmentID)) {
@@ -83,7 +43,7 @@ export function useApplicationData() {
   }
 
   function bookInterview(id, interview) {
-    // console.log(id, interview);
+    //The variable "judger" is to store the status of current interview object based on the appointmentID passed in before state changed, if it is null, means the appointment is newly created and we have to minors 1 of the daily spots, if it is NOT null, means this is an editing operation and no need to change the daily spots amount.
     const judger = state.appointments[id].interview;
     const appointment = {
       ...state.appointments[id],
@@ -99,18 +59,18 @@ export function useApplicationData() {
       ...state,
       appointments
     });
-    // transition("SHOW");
+
     return axios.put(`/api/appointments/${id}`, {
       interview,
       student: id
      })
      .then(() => {
+       //if "judger" is null, we need to call "updateDaysSpots" function to update the daily spots amount
        if (!judger) {
         const days = updateDaysSpots(state.days, id, -1);
         dispatch({ type: SET_SPOTS, days: days })
        }
      });
-    // setState(previousState => ({ ...previousState, appointments: result.data }));
   }
 
   function cancelInterview(id) {

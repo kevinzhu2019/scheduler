@@ -36,13 +36,10 @@ export default function Form(props) {
             name="name"
             type="text"
             placeholder="Enter Student Name"
-            /*
-              This must be a controlled component
-            */
-           value={name}
-           onSubmit={event => event.preventDefault()}
-           onChange={(event) => setName(event.target.value)}
-           data-testid="student-name-input"
+            value={name}
+            onSubmit={event => event.preventDefault()}
+            onChange={(event) => setName(event.target.value)}
+            data-testid="student-name-input"
           />
         </form>
         <section className="appointment__validation">{error}</section>
@@ -51,7 +48,6 @@ export default function Form(props) {
       <section className="appointment__card-right">
         <section className="appointment__actions">
           <Button danger onClick={(event) => cancel()}>Cancel</Button>
-          {/* <Button confirm onClick={(event) => props.onSave((name, interviewer))}>Save</Button> */}
           <Button confirm onClick={() => validate()}>Save</Button>
         </section>
       </section>

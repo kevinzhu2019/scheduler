@@ -8,7 +8,6 @@ import Form from "./Form";
 import Status from "./Status";
 import Confirm from "./Confirm";
 import Error from "./Error";
-// import validate from "./Form";
 
 export default function Appointment(props) {
 
@@ -36,8 +35,6 @@ export default function Appointment(props) {
       transition(ERROR_INTERVIEWER, true);
     } else {
 
-    // validate(name, interviewer);
-
     transition(SAVING);
 
     props
@@ -59,7 +56,6 @@ export default function Appointment(props) {
     .cancelInterview(props.id)
     .then(() => transition(EMPTY))
     .catch(error => transition(ERROR_DELETE, true))
-    // .then(() => transition(SHOW));
   }
 
   function onEdit() {
